@@ -34,11 +34,11 @@ npm run preview
 
 ## 更新立绘
 
-将已获授权的透明 WebP/AVIF/PNG 文件放入 `public/images/`，建议移动端主图控制在约 500 KB 内；导出前保留完整头部和脸部，避免过度裁切。然后在 `src/config/profile.ts` 更新 `characterImagePath`（例如 `/images/saki.webp`）。图片尺寸与布局应在手机宽度下重新检查。本项目当前没有实际角色立绘，仍显示占位区域。
+当前 Hero 立绘资源位于 `public/assets/saki-hero.svg`，由 `src/config/profile.ts` 的 `characterImagePath` 引用。替换成已获授权的 WebP/AVIF/PNG 文件时，可放入 `public/assets/` 并同步更新路径；优先控制移动端首屏图像体积，保留脸部完整，并在手机宽度下复查裁切。
 
 ## 更新背景音乐
 
-编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`autoPlay`、`autoPlayDelayMs`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。当前音频元素设置 `preload="none"`，自动播放尝试延后到首屏渲染后，以减少竞争首屏资源。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器不自动播放；必须由访客点击播放。页面不可见时默认暂停，返回时会恢复此前正在播放的音乐。浏览器可能因自动播放策略拒绝自动播放，此时由访客点击播放。音量由用户控制。
+编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`autoPlay`、`autoPlayDelayMs`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。当前音频元素设置 `preload="none"`，自动播放尝试延后到首屏渲染后，以减少竞争首屏资源。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器会在延迟后尝试自动播放；页面不可见时默认暂停，返回时会恢复此前正在播放的音乐。浏览器可能因自动播放策略拒绝自动播放，此时由访客点击播放。音量由用户控制。
 
 ## 修改其他网站文字
 
@@ -84,6 +84,6 @@ python scripts/generate_qr.py https://your-final-site.vercel.app
 
 ## 项目结构
 
-组件按页面区域拆分在 src/components/，共享的 HTMLAudioElement 播放器位于 src/hooks/useAudioPlayer.tsx，profile 与 music 配置位于 src/config/。public/audio/bgm.mp3 是当前 BGM；public/assets/favicon.svg 为网站图标。角色图片目录预留在 public/assets/，需添加真实授权素材后再填写 profile 路径。
+组件按页面区域拆分在 src/components/，共享的 HTMLAudioElement 播放器位于 src/hooks/useAudioPlayer.tsx，profile 与 music 配置位于 src/config/。public/audio/bgm.mp3 是当前 BGM；public/assets/favicon.svg 为网站图标；public/assets/saki-hero.svg 是当前 Hero 立绘。
 
 
