@@ -1,6 +1,6 @@
 # Saki Producer Card
 
-花海咲季主题的移动优先 Producer 数字名片。React、TypeScript、Vite、Tailwind CSS、Motion for React 与 Lucide React 构建。当前视觉素材只使用几何图形和占位框，不含未经授权的角色图片。背景音乐为项目提供的 MP3，由用户点击后通过原生 `HTMLAudioElement` 播放。
+花海咲季主题的移动优先 Producer 数字名片。React、TypeScript、Vite、Tailwind CSS、Motion for React 与 Lucide React 构建。当前视觉素材只使用几何图形和占位框，不含未经授权的角色图片。背景音乐由原生 `HTMLAudioElement` 播放，初始音量为 10%；页面完成首屏渲染后延迟尝试自动播放，浏览器拒绝时可通过播放器按钮启动。页面隐藏时按配置暂停，返回时恢复此前正在播放的音乐。
 
 ## 本地运行
 
@@ -38,7 +38,7 @@ npm run preview
 
 ## 更新背景音乐
 
-编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器不自动播放；必须由访客点击播放。页面不可见时默认暂停，回到页面后不会自动续播。音量由用户控制。
+编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`autoPlay`、`autoPlayDelayMs`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。当前音频元素设置 `preload="none"`，自动播放尝试延后到首屏渲染后，以减少竞争首屏资源。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器不自动播放；必须由访客点击播放。页面不可见时默认暂停，回到页面后不会自动续播。音量由用户控制。
 
 ## 修改其他网站文字
 
@@ -56,6 +56,10 @@ npm run preview
 6. 访问首页与 `/audio/bgm.mp3`，检查页面、SNS、音频及手机布局后，再把最终 HTTPS URL 用于印刷二维码。
 
 尚未在 Vercel 部署。本地完成构建或部署成功前，不应将网站视为已公开。
+
+## Netlify 免费部署
+
+Netlify 配置和大陆网络验证清单见 [NETLIFY.md](NETLIFY.md)。项目保留 `vercel.json`，Netlify 的构建配置与 SPA fallback 独立存在；连接同一个 GitHub 仓库后可让两平台分别持续部署。免费套餐有月度使用上限，超限会暂停站点；无需购买域名或启用自动充值。
 
 ## 生成印刷二维码
 
