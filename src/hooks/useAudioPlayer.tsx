@@ -28,6 +28,7 @@ export function useAudioPlayer() {
 export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLAudioElement>(null)
   const autoPlayAttempted = useRef(false)
+  const autoPlayTimer = useRef<number | null>(null)
   const resumeOnVisible = useRef(false)
   const [playing, setPlaying] = useState(false)
   const [muted, setMutedState] = useState<boolean>(musicConfig.startMuted)
@@ -104,9 +105,21 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!musicConfig.autoPlay || autoPlayAttempted.current) return
-    autoPlayAttempted.current = true
     const audio = ref.current
-    if (audio) attemptPlayback(audio)
+    if (!audio) return
+
+    const timer = window.setTimeout(() => {
+      autoPlayTimer.current = null
+      if (autoPlayAttempted.current) return
+      autoPlayAttempted.current = true
+      attemptPlayback(audio)
+    }, musicConfig.autoPlayDelayMs)
+    autoPlayTimer.current = timer
+
+    return () => {
+      window.clearTimeout(timer)
+      if (autoPlayTimer.current === timer) autoPlayTimer.current = null
+    }
   }, [attemptPlayback])
 
   useEffect(() => {
@@ -139,6 +152,11 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const toggle = useCallback(() => {
     const audio = ref.current
     if (!audio) return
+    autoPlayAttempted.current = true
+    if (autoPlayTimer.current !== null) {
+      window.clearTimeout(autoPlayTimer.current)
+      autoPlayTimer.current = null
+    }
     if (!audio.paused) {
       audio.pause()
       return

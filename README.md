@@ -1,6 +1,6 @@
 # Saki Producer Card
 
-花海咲季主题的移动优先 Producer 数字名片。React、TypeScript、Vite、Tailwind CSS、Motion for React 与 Lucide React 构建。当前视觉素材只使用几何图形和占位框，不含未经授权的角色图片。背景音乐为项目提供的 MP3，由用户点击后通过原生 `HTMLAudioElement` 播放。
+花海咲季主题的移动优先 Producer 数字名片。React、TypeScript、Vite、Tailwind CSS、Motion for React 与 Lucide React 构建。页面采用竞技舞台主题，并加载仓库内本地托管的角色立绘素材。背景音乐由原生 `HTMLAudioElement` 播放，初始音量为 10%；页面完成首屏渲染后延迟尝试自动播放，浏览器拒绝时可通过播放器按钮启动。页面隐藏时按配置暂停，返回时恢复此前正在播放的音乐。
 
 ## 本地运行
 
@@ -34,11 +34,11 @@ npm run preview
 
 ## 更新立绘
 
-将已获授权的透明 WebP/AVIF/PNG 文件放入 `public/images/`，建议移动端主图控制在约 500 KB 内；导出前保留完整头部和脸部，避免过度裁切。然后在 `src/config/profile.ts` 更新 `characterImagePath`（例如 `/images/saki.webp`）。图片尺寸与布局应在手机宽度下重新检查。本项目当前没有实际角色立绘，仍显示占位区域。
+当前 Hero 立绘资源位于 `public/assets/saki-hero.svg`，由 `src/config/profile.ts` 的 `characterImagePath` 引用。替换成已获授权的 WebP/AVIF/PNG 文件时，可放入 `public/assets/` 并同步更新路径；优先控制移动端首屏图像体积，保留脸部完整，并在手机宽度下复查裁切。
 
 ## 更新背景音乐
 
-编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器不自动播放；必须由访客点击播放。页面不可见时默认暂停，回到页面后不会自动续播。音量由用户控制。
+编辑 `src/config/music.ts` 的 `title`、`artist`、`src`、`autoPlay`、`autoPlayDelayMs`、`pauseWhenHidden`、`startMuted` 和 `initialVolume`。当前音频元素设置 `preload="none"`，自动播放尝试延后到首屏渲染后，以减少竞争首屏资源。音频文件放在 `public/audio/`，并使用以 `/audio/` 开头的路径。播放器会在延迟后尝试自动播放；页面不可见时默认暂停，返回时会恢复此前正在播放的音乐。浏览器可能因自动播放策略拒绝自动播放，此时由访客点击播放。音量由用户控制。
 
 ## 修改其他网站文字
 
@@ -55,7 +55,11 @@ npm run preview
 5. 部署成功后，使用 Vercel 提供的 `*.vercel.app` 公共 URL。无需先购买或绑定自定义域名；绑定域名是可选项。
 6. 访问首页与 `/audio/bgm.mp3`，检查页面、SNS、音频及手机布局后，再把最终 HTTPS URL 用于印刷二维码。
 
-尚未在 Vercel 部署。本地完成构建或部署成功前，不应将网站视为已公开。
+当前 Vercel 生产站点为 https://saki-producer-card.vercel.app/。Netlify 准备配置保留原有 Vercel 项目与网址，不改动其构建设置。
+
+## Netlify 免费部署
+
+Netlify 配置和大陆网络验证清单见 [NETLIFY.md](NETLIFY.md)。项目保留 `vercel.json`，Netlify 的构建配置与 SPA fallback 独立存在；连接同一个 GitHub 仓库后可让两平台分别持续部署。免费套餐有月度使用上限，超限会暂停站点；无需购买域名或启用自动充值。
 
 ## 生成印刷二维码
 
@@ -80,6 +84,6 @@ python scripts/generate_qr.py https://your-final-site.vercel.app
 
 ## 项目结构
 
-组件按页面区域拆分在 src/components/，共享的 HTMLAudioElement 播放器位于 src/hooks/useAudioPlayer.tsx，profile 与 music 配置位于 src/config/。public/audio/bgm.mp3 是当前 BGM；public/assets/favicon.svg 为网站图标。角色图片目录预留在 public/assets/，需添加真实授权素材后再填写 profile 路径。
+组件按页面区域拆分在 src/components/，共享的 HTMLAudioElement 播放器位于 src/hooks/useAudioPlayer.tsx，profile 与 music 配置位于 src/config/。public/audio/bgm.mp3 是当前 BGM；public/assets/favicon.svg 为网站图标；public/assets/saki-hero.svg 是当前 Hero 立绘。
 
 
