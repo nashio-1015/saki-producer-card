@@ -7,8 +7,8 @@ export const profile = {
     { platform: 'Bilibili', accountId: '327218901', url: 'https://space.bilibili.com/327218901?spm_id_from=333.337.0.0', visible: true, order: 1 },
     { platform: 'X', accountId: '@nashio_520', url: 'https://x.com/nashio_520', visible: true, order: 2 },
     { platform: '小红书', accountId: '用户主页', url: 'https://www.xiaohongshu.com/user/profile/64c7611d000000000e026783', visible: true, order: 3 },
-    { platform: 'Instagram', accountId: '待填写账号', url: '', visible: true, order: 4 },
-    { platform: 'QQ', accountId: '2321083911', url: 'https://wpa.qq.com/msgrd?v=3&uin=2321083911&site=qq&menu=yes', visible: true, order: 5 },
+    { platform: 'Instagram', accountId: '待填写账号', url: '', visible: false, order: 5 },
+    { platform: 'QQ', accountId: '2321083911', url: 'https://wpa.qq.com/msgrd?v=3&uin=2321083911&site=qq&menu=yes', visible: true, order: 4 },
     { platform: '自定义', accountId: '待配置', url: '', visible: false, order: 6 },
   ] satisfies SocialPlatform[],
 } as const
