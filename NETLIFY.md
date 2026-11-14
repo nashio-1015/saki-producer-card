@@ -7,8 +7,9 @@
 1. 登录或创建 Netlify 账号，在导入时选择 **Import from Git**，再授权 Netlify 访问 `nashio-1015/saki-producer-card`。授权时只选择这个仓库（如果授权界面支持仓库范围）。
 2. 使用 Netlify Free（显示价格为 $0/月）。不要选择付费升级，也不要打开自动充值。Free 每月有 300 credits 的硬上限；达到上限后站点会暂停至下个计费周期，不会自动产生超额费用。上线后在 Usage 页面留意剩余额度。
 3. 导入后确认生产分支为 `main`，构建命令为 `npm run build`，发布目录为 `dist`。这些值也写在 `netlify.toml`，通常会自动识别。
-4. 点击部署，等待构建成功。先使用 Netlify 提供的 `*.netlify.app` 地址；无需购买域名。不要修改 Vercel 项目、DNS 或自定义域名设置。
-5. 这组准备文件目前在 `codex/netlify-free-deploy` 分支。将配置合并到 `main` 后，Netlify 和现有 Vercel 才能都从同一生产分支持续部署。Vercel 配置保持原样。
+4. 点击部署，等待生产构建成功。若新团队默认将项目设为私有，进入项目的 **Make public** 流程（或 Project configuration → General → Visitor access → Project visibility 设为 Public），否则普通访客无法访问；公开生产部署不会要求你购买域名。
+5. 使用 Netlify 提供的 `*.netlify.app` 地址；无需购买域名。不要修改 Vercel 项目、DNS 或自定义域名设置。
+6. 这组准备文件目前在 `codex/netlify-free-deploy` 分支。将配置合并到 `main` 后，Netlify 和现有 Vercel 才能都从同一生产分支持续部署。Vercel 配置保持原样。
 
 项目只有单页界面，但包含 `public/_redirects` 将未知路径回退到 `index.html`，避免 Netlify 在直接打开深层链接时返回 404。Netlify 的音频缓存时间为 1 小时，避免更新 `/audio/bgm.mp3` 后被长时间旧缓存遮住。
 
