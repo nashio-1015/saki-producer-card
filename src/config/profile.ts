@@ -23,11 +23,9 @@ export function safeExternalUrl(raw: string, allowQQProfile = false): string | n
       && url.pathname === '/show_pslcard'
       && url.searchParams.get('src_type') === 'internal'
       && url.searchParams.get('version') === '1'
-      && /^\\d{5,12}$/.test(url.searchParams.get('uin') ?? '')
+      && /^[0-9]{5,12}$/.test(url.searchParams.get('uin') ?? '')
     return isQQProfile ? url.href : null
   } catch {
     return null
   }
 }
-
-
