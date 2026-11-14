@@ -5,5 +5,5 @@ export const musicConfig = {
   autoPlay: true,
   pauseWhenHidden: true,
   startMuted: false,
-  initialVolume: 0.05,
+  initialVolume: 0.1,
 } as const
