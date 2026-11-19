@@ -9,8 +9,21 @@ export function AudioPlayerProvider({children}:{children:ReactNode}){
  const [playing,setPlaying]=useState(false),[muted,setMutedState]=useState<boolean>(musicConfig.startMuted),[volume,setVolumeState]=useState<number>(musicConfig.initialVolume),[currentTime,setCurrentTime]=useState(0),[duration,setDuration]=useState(0),[available,setAvailable]=useState<boolean|null>(null),[error,setError]=useState(false),[needsInteraction,setNeedsInteraction]=useState(false)
  const attempt=useCallback((audio:HTMLAudioElement)=>{audio.muted=muted;audio.volume=volume;void audio.play().then(()=>{setAvailable(true);setError(false);setNeedsInteraction(false)}).catch((e:unknown)=>{setPlaying(false);const n=e instanceof DOMException?e.name:'';if(n==='NotAllowedError'){setAvailable(true);setNeedsInteraction(true);setError(false)}else if(n!=='AbortError'){setNeedsInteraction(false);setError(true)}})},[muted,volume])
  const startFromGesture=useCallback(()=>{attempted.current=true;if(ref.current)attempt(ref.current)},[attempt])
- useEffect(()=>{const a=ref.current;if(!a)return;a.muted=musicConfig.startMuted;a.volume=musicConfig.initialVolume;a.preload='none';const time=()=>setCurrentTime(a.currentTime||0),meta=()=>{setDuration(Number.isFinite(a.duration)?a.duration:0);setAvailable(true)},play=()=>{setPlaying(true);setAvailable(true);setError(false);setNeedsInteraction(false)},pause=()=>setPlaying(false),err=()=>{setPlaying(false);setAvailable(false);setError(true);setNeedsInteraction(false)};a.addEventListener('timeupdate',time);a.addEventListener('loadedmetadata',meta);a.addEventListener('durationchange',meta);a.addEventListener('play',play);a.addEventListener('pause',pause);a.addEventListener('error',err);return()=>{a.removeEventListener('timeupdate',time);a.removeEventListener('loadedmetadata',meta);a.removeEventListener('durationchange',meta);a.removeEventListener('play',play);a.removeEventListener('pause',pause);a.removeEventListener('error',err)}},[])
+ useEffect(()=>{const a=ref.current;if(!a)return;a.muted=musicConfig.startMuted;a.volume=musicConfig.initialVolume;a.preload='none';const time=()=>setCurrentTime(a.currentTime||0),meta=()=>{setDuration(Number.isFinite(a.duration)?a.duration:0);setAvailable(true)},play=()=>{setPlaying(true);setAvailable(true);setError(false);setNeedsInteraction(false)},pause=()=>setPlaying(false),err=()=>{setPlaying(false);setAvailable(false);setError(true);setNeedsInteraction(false)};a.addEventListener('timeupdate',time);a.addEventListener('loadedmetadata',meta);a.addEventListener('durationchange',meta);a.addEventListener('playing',play);a.addEventListener('pause',pause);a.addEventListener('error',err);return()=>{a.removeEventListener('timeupdate',time);a.removeEventListener('loadedmetadata',meta);a.removeEventListener('durationchange',meta);a.removeEventListener('playing',play);a.removeEventListener('pause',pause);a.removeEventListener('error',err)}},[])
  useEffect(()=>{if(!musicConfig.autoPlay||attempted.current)return;attempted.current=true;if(ref.current)attempt(ref.current)},[attempt])
+  // Retry blocked autoplay synchronously inside a trusted tap or keyboard click.
+  useEffect(() => {
+    if (!musicConfig.autoPlay || !needsInteraction) return
+    const retryOnClick = (event: MouseEvent) => {
+      const audio = ref.current
+      if (!event.isTrusted || document.hidden || !audio?.paused || audio.error) return
+      if (event.target instanceof Element &&
+          event.target.closest('.header-audio-button, #music button, #music input')) return
+      attempt(audio)
+    }
+    document.addEventListener('click', retryOnClick)
+    return () => document.removeEventListener('click', retryOnClick)
+  }, [needsInteraction, attempt])
  useEffect(()=>{if(ref.current)ref.current.muted=muted},[muted]);useEffect(()=>{if(ref.current)ref.current.volume=volume},[volume])
  useEffect(()=>{if(!musicConfig.pauseWhenHidden)return;const change=()=>{const a=ref.current;if(!a)return;if(document.hidden){resume.current=!a.paused;if(resume.current)a.pause()}else if(resume.current){resume.current=false;attempt(a)}};document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[attempt])
  const toggle=useCallback(()=>{const a=ref.current;if(!a)return;if(!a.paused){a.pause();return}if(available===false){setError(true);return}attempted.current=true;attempt(a)},[available,attempt])
