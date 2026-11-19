@@ -6,5 +6,5 @@ export const musicConfig = {
   autoPlayDelayMs: 1200,
   pauseWhenHidden: true,
   startMuted: false,
-  initialVolume: 0.1,
+  initialVolume: 0.15,
 } as const
